@@ -9,6 +9,9 @@ class HTMLNode():
         raise NotImplementedError("Do not use parent class for this method")
     
     def props_to_html(self):
+        if not self.props:
+            return ""
+        
         result = ""
         for prop in self.props:
             result += f' {prop}="{self.props[prop]}"'
