@@ -7,4 +7,8 @@ def main():
     except ValueError as v:
         print(v)
 
+    s = "This is a **bold word** and **another**"
+    slist = s.split("**")
+    print(slist)
+
 main()
