@@ -287,20 +287,77 @@ class TestSplitNodesImageAndLink(unittest.TestCase):
         )
 
     def test_split_error_syntax_image(self):
-        try:
-            node = TextNode(
-                "![image(https://www.imgur.jpeg) Before this is an image",
-                TextType.TEXT,
-            )
-            new_nodes = split_nodes_image([node])
-            self.assertListEqual(
-                [
-                    TextNode("![image(https://www.imgur.jpeg) Before this is an image", TextType.TEXT)
-                ],
-                new_nodes
-            )
-        except ValueError as v:
-            print(v)
+        node = TextNode(
+            "![image(https://www.imgur.jpeg) Before this is an image",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("![image(https://www.imgur.jpeg) Before this is an image", TextType.TEXT)
+            ],
+            new_nodes
+        )
+
+
+#Tests for method "text_to_textnodes"
+class TestTextToTextNodes(unittest.TestCase):
+    def test_basic_all(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            new_nodes
+        )
+
+    def test_basic_shuffle(self):
+        text = "My name is _ZyDrew_ and i look like this ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg). Come to my `web page` following this [link](https://boot.dev) " \
+        "i will be really **happy** to see you. In reality, i look like **this** ![image](https://i.imgur.com/zjjcJKZ.png)"
+
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("My name is ", TextType.TEXT),
+                TextNode("ZyDrew", TextType.ITALIC),
+                TextNode(" and i look like this ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(". Come to my ", TextType.TEXT),
+                TextNode("web page", TextType.CODE),
+                TextNode(" following this ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+                TextNode(" i will be really ", TextType.TEXT),
+                TextNode("happy", TextType.BOLD),
+                TextNode(" to see you. In reality, i look like ", TextType.TEXT),
+                TextNode("this", TextType.BOLD),
+                TextNode(" ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png")
+            ],
+            new_nodes
+        )
+    
+    def test_nothing_to_split(self):
+        text = "My name is ZyDrew and i look like this https://i.imgur.com/fJRm4Vk.jpeg. Come to my web page following this https://boot.dev " \
+        "i will be really happy to see you. In reality, i look like this https://i.imgur.com/zjjcJKZ.png"
+
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("My name is ZyDrew and i look like this https://i.imgur.com/fJRm4Vk.jpeg. Come to my web page following this https://boot.dev " \
+                "i will be really happy to see you. In reality, i look like this https://i.imgur.com/zjjcJKZ.png", TextType.TEXT),
+            ],
+            new_nodes
+        )
 
 if __name__ == "__main__":
     unittest.main()

@@ -131,3 +131,19 @@ def split_nodes_link(old_nodes):
 
         new_nodes.extend(sections)
     return new_nodes
+
+#ALL IN ONE
+# ON VA PRENDRE LE TEXTE ENTIER ET LE FAIRE PASSER DANS CHAQUE SPLIT METHOD
+# LA LISTE "NODES" SERA REMISE A JOUR DU DEBUT A LA FIN A CHAQUE APPEL DE METHOD
+# DE CE FAIT, ON N'A PAS BESOIN DE REVENIR EN ARRIERE POUR RE-TESTER CHAQUE PARTIE DE TEXTE
+# CECI EST REALISABLE GRACE A L'IMPLEMENTATION INTELLIGENTE DES METHODES
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+
+    return nodes
