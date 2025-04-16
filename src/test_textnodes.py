@@ -219,5 +219,88 @@ class TestSplitNodesDelimiteur(unittest.TestCase):
             new_nodes,
         )
 
+#Tests for method "split_nodes_image" "split_nodes_link"
+class TestSplitNodesImageAndLink(unittest.TestCase):
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                )
+            ],
+            new_nodes
+        )
+        print(f"Split img-link 1 : {new_nodes}")
+
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with a link [sloth](https://www.sloth.io) and another [fox](https://www.fox.io)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a link ", TextType.TEXT),
+                TextNode("sloth", TextType.LINK, "https://www.sloth.io"),
+                TextNode(" and another ", TextType.TEXT),
+                TextNode("fox", TextType.LINK, "https://www.fox.io")
+            ],
+            new_nodes
+        )
+        print(f"Split img-link 2 : {new_nodes}")
+
+    def test_split_start_with_link(self):
+        node = TextNode(
+            "[sloth](https://www.sloth.io) Before this is a link",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("sloth", TextType.LINK, "https://www.sloth.io"),
+                TextNode(" Before this is a link", TextType.TEXT),
+            ],
+            new_nodes
+        )
+        print(f"Split img-link 3 : {new_nodes}")
+    
+    def test_split_start_with_image(self):
+        node = TextNode(
+            "![image](https://www.imgur.jpeg) Before this is an image",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("image", TextType.IMAGE, "https://www.imgur.jpeg"),
+                TextNode(" Before this is an image", TextType.TEXT),
+            ],
+            new_nodes
+        )
+
+    def test_split_error_syntax_image(self):
+        try:
+            node = TextNode(
+                "![image(https://www.imgur.jpeg) Before this is an image",
+                TextType.TEXT,
+            )
+            new_nodes = split_nodes_image([node])
+            self.assertListEqual(
+                [
+                    TextNode("![image(https://www.imgur.jpeg) Before this is an image", TextType.TEXT)
+                ],
+                new_nodes
+            )
+        except ValueError as v:
+            print(v)
+
 if __name__ == "__main__":
     unittest.main()

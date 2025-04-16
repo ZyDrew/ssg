@@ -1,5 +1,6 @@
 from enum import Enum
 from leafnodes import LeafNode
+from regex_function import *
 
 #ENUM FOR TEXTNODE MARKDOWN
 class TextType(Enum):
@@ -47,6 +48,7 @@ def text_node_to_leaf_node(text_node):
             raise ValueError(f"Value text_type not in TextType ENUM : {text_node.text_type}")
 
 #Transform inline text node (markdown) as a list of text node object
+#TEXT - BOLD - ITALIC - CODE
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     if delimiter not in ("**", "_", "`"):
         raise ValueError(f"Invalid markdown syntax : {delimiter}")
@@ -68,4 +70,64 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 elif i % 2 != 0:
                     new_nodes.append(TextNode(splitted_node[i], text_type))
                     
+    return new_nodes
+
+#IMAGE
+def split_nodes_image(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+            continue
+
+        images = extract_markdown_images(node.text)
+        if not images:
+            new_nodes.append(node)
+            continue
+
+        sections = []
+        next_split = node.text
+        for image in images:
+            splitted_node = next_split.split(f"![{image[0]}]({image[1]})", 1)
+            
+            next_split = splitted_node[1]
+
+            if splitted_node[0] != "":
+                sections.append(TextNode(splitted_node[0], TextType.TEXT))
+            sections.append(TextNode(image[0], TextType.IMAGE, image[1]))
+        
+        if next_split != "":
+            sections.append(TextNode(next_split, TextType.TEXT))
+
+        new_nodes.extend(sections)
+    return new_nodes
+
+#LINK
+def split_nodes_link(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+            continue
+
+        links = extract_markdown_links(node.text)
+        if not links:
+            new_nodes.append(node)
+            continue
+
+        sections = []
+        next_split = node.text
+        for link in links:
+            splitted_node = next_split.split(f"[{link[0]}]({link[1]})", 1)
+            
+            next_split = splitted_node[1]
+
+            if splitted_node[0] != "":
+                sections.append(TextNode(splitted_node[0], TextType.TEXT))
+            sections.append(TextNode(link[0], TextType.LINK, link[1]))
+        
+        if next_split != "":
+            sections.append(TextNode(next_split, TextType.TEXT))
+
+        new_nodes.extend(sections)
     return new_nodes
