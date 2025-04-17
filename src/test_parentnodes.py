@@ -7,7 +7,7 @@ class TestHTMLNode(unittest.TestCase):
         child_node = LeafNode("span", "child")
         parent_node = ParentNode("div", [child_node])
         self.assertEqual(parent_node.to_html(), "<div><span>child</span></div>")
-        print(parent_node.to_html())
+        #print(parent_node.to_html())
 
     def test_to_html_with_grandchild(self):
         grandchild_node = LeafNode("b", "grandchild")
@@ -17,7 +17,7 @@ class TestHTMLNode(unittest.TestCase):
             parent_node.to_html(),
             "<div><span><b>grandchild</b></span></div>",
         )
-        print(parent_node.to_html())
+        #print(parent_node.to_html())
 
     def test_to_html_with_children(self):
         child_node = LeafNode("span", "child")
@@ -25,7 +25,7 @@ class TestHTMLNode(unittest.TestCase):
         child_node3 = LeafNode(None, "raw child text")
         parent_node = ParentNode("div", [child_node, child_node2, child_node3])
         self.assertEqual(parent_node.to_html(), "<div><span>child</span><b>bold child text</b>raw child text</div>")
-        print(parent_node.to_html())
+        #print(parent_node.to_html())
     
     def test_to_html_no_children(self):
         try:
@@ -43,13 +43,13 @@ class TestHTMLNode(unittest.TestCase):
         child_node4 = ParentNode("p", [grandchild_node, grandchild_node2])
         parent_node = ParentNode("div", [child_node, child_node2, child_node3, child_node4])
         self.assertEqual(parent_node.to_html(), '<div><span>child</span><b>bold child text</b>raw child text<p><b attr="attribute">bold grandchild</b><i>italic grandchild</i></p></div>')
-        print(parent_node.to_html())
+        #print(parent_node.to_html())
     
     def test_to_html_with_child_and_parenthref(self):
         child_node = LeafNode("span", "child")
         parent_node = ParentNode("div", [child_node], {"attr" : "attribute"})
         self.assertEqual(parent_node.to_html(), '<div attr="attribute"><span>child</span></div>')
-        print(parent_node.to_html())
+        #print(parent_node.to_html())
 
     #Course's tests to ensure functional class
     def test_to_html_many_children(self):

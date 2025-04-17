@@ -52,7 +52,7 @@ class TestTextNodeToLeafNode(unittest.TestCase):
         leaf_node = text_node_to_leaf_node(text_node)
         self.assertEqual(leaf_node.tag, "i")
         self.assertEqual(leaf_node.value, "This is italic")
-        print(f"leaf : {leaf_node.to_html()}")
+        #print(f"leaf : {leaf_node.to_html()}")
 
     def test_invalid_type(self):
         try:
@@ -60,7 +60,7 @@ class TestTextNodeToLeafNode(unittest.TestCase):
             leaf_node = text_node_to_leaf_node(text_node)
             self.assertEqual(leaf_node.tag, "i")
             self.assertEqual(leaf_node.value, "This is italic")
-            print(f"leaf : {leaf_node.to_html()}")
+            #print(f"leaf : {leaf_node.to_html()}")
         except ValueError as v:
             print(v)
     
@@ -73,7 +73,7 @@ class TestTextNodeToLeafNode(unittest.TestCase):
             leaf_node.props,
             {"href": "https://www.sloth.io"},
         )
-        print(f"leaf link : {leaf_node.to_html()}")
+        #print(f"leaf link : {leaf_node.to_html()}")
 
     #Course's tests
     def test_textnode_text(self):
@@ -91,7 +91,7 @@ class TestTextNodeToLeafNode(unittest.TestCase):
             leaf_node.props,
             {"src": "https://www.boot.dev", "alt": "This is an image"},
         )
-        print(f"leaf image : {leaf_node.to_html()}")
+        #print(f"leaf image : {leaf_node.to_html()}")
 
     def test_bold(self):
         node = TextNode("This is bold", TextType.BOLD)
@@ -238,7 +238,7 @@ class TestSplitNodesImageAndLink(unittest.TestCase):
             ],
             new_nodes
         )
-        print(f"Split img-link 1 : {new_nodes}")
+        #print(f"Split img-link 1 : {new_nodes}")
 
     def test_split_links(self):
         node = TextNode(
@@ -255,7 +255,7 @@ class TestSplitNodesImageAndLink(unittest.TestCase):
             ],
             new_nodes
         )
-        print(f"Split img-link 2 : {new_nodes}")
+        #print(f"Split img-link 2 : {new_nodes}")
 
     def test_split_start_with_link(self):
         node = TextNode(
@@ -270,7 +270,7 @@ class TestSplitNodesImageAndLink(unittest.TestCase):
             ],
             new_nodes
         )
-        print(f"Split img-link 3 : {new_nodes}")
+        #print(f"Split img-link 3 : {new_nodes}")
     
     def test_split_start_with_image(self):
         node = TextNode(
