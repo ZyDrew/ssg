@@ -1,1 +1,1 @@
-python3 src/main.py "/ZyDrew.github.io/"
+python3 src/main.py "/ssg/"
