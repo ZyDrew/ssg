@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 from copy_static import copy_all_files_from_sources
-from page_generator import generate_page
+from page_generator import generate_pages_recursive
 
 def main():
     #Setting up all paths
@@ -20,7 +20,7 @@ def main():
     print("Starting copy process... Generating public folder...")
     copy_all_files_from_sources(static_path, public_path)
 
-    #Generating the website
-    generate_page(f"{content_path}/index.md", f"{script_path}/template.html", f"{public_path}/index.html")
+    #Generating all web pages
+    generate_pages_recursive(content_path, f"{script_path}/template.html", public_path)
 
 main()

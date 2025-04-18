@@ -10,7 +10,7 @@ def copy_all_files_from_sources(source, destination):
 
         if os.path.isdir(item_source):
             print(f"Copying folder {item_source} to {item_dest}")
-            os.mkdir(f"{item_dest}")
+            os.mkdir(item_dest)
             copy_all_files_from_sources(item_source, item_dest)
         else:
             print(f"Copying file {item_source} to {item_dest}")
