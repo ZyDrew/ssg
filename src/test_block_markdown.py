@@ -98,7 +98,6 @@ class TestBlockToBlockType(unittest.TestCase):
         block = "```\ncode\n"
         block_type = block_to_block_type(block)
         self.assertEqual(BlockType.PARAGRAPH, block_type)
-        print(block_type)
     
     def test_quote_block(self):
         block = "> quote1\n> quote2\n> quote3"

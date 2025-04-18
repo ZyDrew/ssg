@@ -1,21 +1,26 @@
-from textnodes import TextNode, TextType
+import os
+import shutil
+from pathlib import Path
+from copy_static import copy_all_files_from_sources
+from page_generator import generate_page
 
 def main():
-    try:
-        node = TextNode("This is some anchor text", TextType.LINK, "https://www.boot.dev")
-        print(node)
-    except ValueError as v:
-        print(v)
+    #Setting up all paths
+    script_path = Path(__file__).parent.parent
+    public_path = script_path / "public"
+    static_path = script_path / "static"
+    content_path = script_path / "content"
+    
+    #Deleting public folder + creating new empty one
+    if os.path.exists(public_path):
+        shutil.rmtree(public_path)
+    os.mkdir(public_path)
 
-    s = "This is text with an ![image(https://i.imgur.com/zjjcJKZ.png) blablabla ![image2](https://w.imgur.com/zjjcJKZ.png) text"
-    image_alt = "image"
-    image_url = "https://i.imgur.com/zjjcJKZ.png"
-    image_alt2 = "image2"
-    image_url2 = "https://w.imgur.com/zjjcJKZ.png"
-    slist = s.split(f"![{image_alt}]({image_url})", 1)
-    #slist2 = slist[1].split(f"![{image_alt2}]({image_url2})", 1)
-    print(len(slist))
-    print(slist)
-    #print(slist2)
+    #Copying all static resources from static dir to public dir
+    print("Starting copy process... Generating public folder...")
+    copy_all_files_from_sources(static_path, public_path)
+
+    #Generating the website
+    generate_page(f"{content_path}/index.md", f"{script_path}/template.html", f"{public_path}/index.html")
 
 main()
