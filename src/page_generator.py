@@ -9,7 +9,7 @@ def extract_title(markdown):
             return block.strip("# ")
     raise ValueError("markdown must have a h1 : heading")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, base_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     #Reading markdown file from content/
@@ -35,12 +35,14 @@ def generate_page(from_path, template_path, dest_path):
     #Updating template.html
     temp = temp.replace("{{ Title }}", title)
     temp = temp.replace("{{ Content }}", html)
+    temp = temp.replace('href="/', f'href="{base_path}')
+    temp = temp.replace('src="/', f'src="{base_path}')
 
     #Writing new file public/index.html
     with open(dest_path, "x", encoding="utf-8") as html_file:
         html_file.write(temp)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, base_path):
     items = os.listdir(dir_path_content)
 
     for item in items:
@@ -49,8 +51,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
 
         if os.path.isfile(item_source):
             item_dest = item_dest.replace(".md", ".html")
-            generate_page(item_source, template_path, item_dest)
+            generate_page(item_source, template_path, item_dest, base_path)
         else:
             os.mkdir(item_dest)
-            generate_pages_recursive(item_source, template_path, item_dest)
+            generate_pages_recursive(item_source, template_path, item_dest, base_path)
     
